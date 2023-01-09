@@ -4,14 +4,13 @@ import Reaptcha from "reaptcha";
 import styles from "./FormSignUp.module.css";
 import { TranslationKeys } from "../../../../locales/constants";
 import { Account } from "../../../../model/Account";
-import { AccountService } from "../../../../services/Account/Account.service";
 import InformationModal from "../../../../components/InformationModal/InformationModal";
+import { useDispatch } from "react-redux";
+import UserService from "../../../../services/User/User.service";
 
 export interface FormSignUpProps {
   onSucceed: () => void;
 }
-
-const accountService = new AccountService();
 
 const FormSignUp: FC<FormSignUpProps> = (props) => {
   const [email, setEmail] = useState("");
@@ -22,6 +21,7 @@ const FormSignUp: FC<FormSignUpProps> = (props) => {
   const [mailAlreadyExist, setMailAlreadyExist] = useState(false);
 
   const intl = useIntl();
+  const dispatch = useDispatch();
 
   const formIsValide = () => {
     return email !== "" &&
@@ -57,10 +57,6 @@ const FormSignUp: FC<FormSignUpProps> = (props) => {
             })
           );
       }
-
-      if (accountService.isAuthTokenSetted()) {
-        props.onSucceed();
-      }
     } else {
       setErrorMessage(
         intl.formatMessage({ id: TranslationKeys.PLEASE_WELL_COMPLETE_FORM })
@@ -86,7 +82,7 @@ const FormSignUp: FC<FormSignUpProps> = (props) => {
             setEmail(e.target.value);
             if (e.target.value.length > 5) {
               setMailAlreadyExist(
-                await accountService.isAccountExist(e.target.value)
+                await UserService.isUserExist(e.target.value)
               );
             } else {
               setMailAlreadyExist(false);

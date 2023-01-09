@@ -1,35 +1,44 @@
 import axios from "axios";
 
-export class HttpService {
-  constructor() {
-    if (localStorage.getItem("Authorization")) {
-      this.setAuthToken(localStorage.getItem("Authorization") as string);
-    }
+const init = () => {
+  if (localStorage.getItem("Authorization")) {
+    setAuthToken(localStorage.getItem("Authorization") as string);
   }
+};
+init();
 
-  async get(url: string) {
-    return await axios.get(url);
-  }
+const get = async (url: string) => {
+  return await axios.get(url);
+};
 
-  async post(url: string, data: any) {
-    return await axios.post(url, data, { validateStatus: () => true });
-  }
+const post = async (url: string, data: any) => {
+  return await axios.post(url, data, { validateStatus: () => true });
+};
 
-  async put(url: string, data: any) {
-    return await axios.put(url, data, { validateStatus: () => true });
-  }
+const put = async (url: string, data: any) => {
+  return await axios.put(url, data, { validateStatus: () => true });
+};
 
-  setAuthToken(token?: string) {
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      localStorage.setItem("Authorization", token.toString());
-    } else {
-      delete axios.defaults.headers.common["Authorization"];
-      localStorage.removeItem("Authorization");
-    }
+const setAuthToken = (token?: string) => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    localStorage.setItem("Authorization", token.toString());
+  } else {
+    delete axios.defaults.headers.common["Authorization"];
+    localStorage.removeItem("Authorization");
   }
+};
 
-  isAuthTokenSetted() {
-    return axios.defaults.headers.common["Authorization"] != null;
-  }
-}
+const isAuthTokenSetted = () => {
+  return axios.defaults.headers.common["Authorization"] != null;
+};
+
+const HTTPService = {
+  get,
+  post,
+  put,
+  setAuthToken,
+  isAuthTokenSetted,
+};
+
+export default HTTPService;
